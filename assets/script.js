@@ -52,5 +52,20 @@ $("#search-button").on("click", function() {
     getWeather(city);
 
     //when search is submitted, add a button with the term searched for
-    $('#history').append($('<button type=button>').addClass('btn btn-secondary mt-3').attr('data-city', city).text(city));
+    $('#history').append($('<button type=button>').addClass('btn btn-secondary mt-3 search-history').attr('data-city', city).text(city));
+
+    let cityList = JSON.parse(localStorage.getItem('searchHistory'));
+    cityList.push(city);
+    localStorage.setItem('searchHistory', JSON.stringify(cityList));
+
   });
+
+
+let searchHistory = JSON.parse(localStorage.getItem('searchHistory'));
+console.log(searchHistory);
+
+for (let i = 0; i < searchHistory.length; i ++ ) {
+    $('#history').append($('<button type=button>').addClass('btn btn-secondary mt-3').attr('data-city', searchHistory[i]).text(searchHistory[i]));
+};
+
+
