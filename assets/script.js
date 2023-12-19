@@ -1,6 +1,8 @@
 const APIKey = "33101dd1a6ef29a5fb92acaf1c7ede91";
 const today = dayjs().format("D/M/YYYY");
 
+let searchHistory = JSON.parse(localStorage.getItem('searchHistory')); //get searchHistory array from local storage
+
 function getWeather(city){
     let queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey; //set url for API
     fetch(queryURL)
@@ -25,13 +27,16 @@ function getWeather(city){
         .then(function (forecastData) {
             $('#forecast').empty();
             $('#forecast').append("<h3> 5-Day Forecast: ");
+            console.log(forecastData);
             for (let i=0; i < forecastData.list.length; i ++) {
 
                 let date = dayjs.unix(forecastData.list[i].dt).format("D/M/YYYY");
+                let time = dayjs.unix(forecastData.list[i].dt).format('h A');
                 let forecastTemperature = Math.round(((forecastData.list[i].main.temp) - 273.15) * 100) / 100;    
 
                 $('#forecast').append("<div class='card text-bg-primary m-3 p-3 col-2'>");
                 $('#forecast').children().eq(i+1).append('<h5 class=card-title>' + date);
+                $('#forecast').children().eq(i+1).append('<p class=card-text>' + time);
                 $('#forecast').children().eq(i+1).append('<p class=card-text> Temp: ' + forecastTemperature + ' °C');
                 $('#forecast').children().eq(i+1).append('<p class=card-text> Wind: ' + forecastData.list[i].wind.speed + ' KPH');
                 $('#forecast').children().eq(i+1).append('<p class=card-text> Wind: ' + forecastData.list[i].main.humidity + '%');
@@ -54,18 +59,19 @@ $("#search-button").on("click", function() {
     //when search is submitted, add a button with the term searched for
     $('#history').append($('<button type=button>').addClass('btn btn-secondary mt-3 search-history').attr('data-city', city).text(city));
 
-    var cityList = JSON.parse(localStorage.getItem('searchHistory'));
-    cityList === null? citylist = [city] : cityList.push(city);
-    localStorage.setItem('searchHistory', JSON.stringify(cityList));
+    if (searchHistory !== null) {
+        searchHistory.push(city);
+    } else {
+        searchHistory = [city];
+    }
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
 
   });
 
 
-let searchHistory = JSON.parse(localStorage.getItem('searchHistory')); //get searchHistory array from local storage
-
 if (searchHistory !== null) {
     for (let i = 0; i < searchHistory.length; i ++ ) { //append all items in searchhistory array as buttons
-        $('#history').append($('<button type=button>').addClass('btn btn-secondary mt-3').attr('data-city', searchHistory[i]).text(searchHistory[i]));
+        $('#history').append($('<button type=button>').addClass('btn btn-secondary mt-3 search-history').attr('data-city', searchHistory[i]).text(searchHistory[i]));
     };
 };
 
