@@ -39,7 +39,7 @@ function getWeather(city){
                 $('#forecast').children().eq(i+1).append('<p class=card-text>' + time);
                 $('#forecast').children().eq(i+1).append('<p class=card-text> Temp: ' + forecastTemperature + ' °C');
                 $('#forecast').children().eq(i+1).append('<p class=card-text> Wind: ' + forecastData.list[i].wind.speed + ' KPH');
-                $('#forecast').children().eq(i+1).append('<p class=card-text> Wind: ' + forecastData.list[i].main.humidity + '%');
+                $('#forecast').children().eq(i+1).append('<p class=card-text> Humidity: ' + forecastData.list[i].main.humidity + '%');
             };
         })
 
